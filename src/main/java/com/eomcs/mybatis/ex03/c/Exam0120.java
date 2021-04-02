@@ -1,0 +1,32 @@
+// insert 문 실행 - Map 객체에 값을 담아 파라미터로 넘기기
+package com.eomcs.mybatis.ex03.c;
+
+import java.util.HashMap;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
+public class Exam0120 {
+
+  public static void main(String[] args) throws Exception {
+
+    SqlSession sqlSession = new SqlSessionFactoryBuilder().build(Resources.getResourceAsStream(
+        "com/eomcs/mybatis/ex03/c/mybatis-config.xml")).openSession(true);
+
+    HashMap<String, Object> params = new HashMap<>();
+    params.put("title", "제목입니다222");
+    params.put("content", "내용입니다222");
+
+    int count = sqlSession.insert("BoardMapper.insert2", params);
+
+    System.out.printf("%d 개의 데이터를 입력했음!\n", count);
+
+    sqlSession.commit();
+
+    sqlSession.close();
+    System.out.println("실행 완료!");
+  }
+
+}
+
+
