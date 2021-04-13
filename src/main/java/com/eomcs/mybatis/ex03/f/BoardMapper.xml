@@ -4,51 +4,94 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="BoardMapper">
+  
   <resultMap type="Board" id="BoardMap">
-    <result column="board_id" property="no"/>
-    <result column="title" property="title"/>
+    <id column="board_id" property="no"/> 
     <result column="contents" property="content"/>
     <result column="created_date" property="registeredDate"/>
     <result column="view_count" property="viewCount"/>
   </resultMap>
   
-  <select id="selectBoard1" resultMap="BoardMap" parameterType="string">
+  <!-- 
+     #{} 을 사용하여 값이 아닌 SQL 코드를 삽입할 수 있는가?
+     => 없다! 오류 발생!!!
+   -->
+  <select id="select1" resultMap="BoardMap" parameterType="string">
     select 
       board_id,
-      title,
+      title,    
       contents,
-      created_date,
-      view_count
+      created_date, 
+      view_count  
     from x_board
     order by board_id #{sortType}
   </select>
   
-  <select id="selectBoard2" resultMap="BoardMap" parameterType="string">
+  <!-- 
+     문자열 치환 문법(${})으로 SQL 코드를 삽입하기
+   -->
+  <select id="select2" resultMap="BoardMap" parameterType="string">
     select 
       board_id,
-      title,
+      title,    
       contents,
-      created_date,
-      view_count
+      created_date, 
+      view_count  
     from x_board
     order by board_id ${sortType}
   </select>
   
-  <select id="selectBoard3" resultMap="BoardMap" parameterType="string">
+  <!-- 
+     ${} 는 SQL 코드를 삽입할 수 있다.
+   -->
+  <select id="select3" resultMap="BoardMap" parameterType="string">
     select 
       board_id,
-      title,
+      title,    
       contents,
-      created_date,
-      view_count
+      created_date, 
+      view_count  
     from x_board
     order by ${sort}
   </select>
   
-  <select id="countRecords" resultType="int" parameterType="string">
+  <!-- 
+     ${} 는 SQL 코드를 삽입할 수 있다.
+   -->
+  <select id="select4" resultMap="BoardMap" parameterType="map">
+    select 
+      board_id,
+      title,    
+      contents,
+      created_date, 
+      view_count  
+    from x_board
+    order by ${columnName} ${sortType}
+  </select>
+  
+  <!-- 
+     ${} 는 SQL 코드를 삽입할 수 있다.
+   -->
+  <select id="count" resultType="int" parameterType="string">
     select 
       count(*)  
     from ${tableName}
   </select>
   
+  <delete id="delete1" parameterType="string">
+    delete from x_board
+    where title = #{value}
+  </delete>
+  
+  <delete id="delete2" parameterType="string">
+    delete from x_board
+    where ${condition}
+  </delete>
 </mapper>
+
+
+
+
+
+
+

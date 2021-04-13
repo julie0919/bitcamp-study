@@ -7,32 +7,31 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
-
-//Data Persistence Framework
-//=> 데이터의 영속성(지속성; 등록,조회,변경,삭제)을 대신 처리해주는 프레임워크.
-//1) SQL Mapper
-//- 직접 SQL 문을 작성
-//- 각각의 DBMS에 최적화된 SQL을 작성할 수 있다.
-//- DBMS마다 미미하게 다른 SQL을 작성해야 하는 번거로움이 있다.
-//- 예) Mybatis 등
-//2) OR Mapper
-//- 전용언어 및 문법(Domain-Specific Language;DSL)을 사용하여 작성
-//실행할 때 DBMS에 맞춰서 SQL을 생성하여 실행한다.
-//- DBMS 마다 SQL문을 작성할 필요가 없어 편리하다.
-//- DBMS에 최적화된 SQL을 실행할 수 없다.
-//즉 DBMS의 특징을 최대로 활용할 수 없다.
-//- 예) Hibernate, TopLink 등
+// Data Persistence Framework
+// => 데이터의 영속성(지속성; 등록,조회,변경,삭제)을 대신 처리해주는 프레임워크.
+// 1) SQL Mapper
+// - 직접 SQL 문을 작성
+// - 각각의 DBMS에 최적화된 SQL을 작성할 수 있다.
+// - DBMS마다 미미하게 다른 SQL을 작성해야 하는 번거로움이 있다.
+// - 예) Mybatis 등
+// 2) OR Mapper
+// - 전용언어 및 문법(Domain-Specific Language;DSL)을 사용하여 작성
+//   실행할 때 DBMS에 맞춰서 SQL을 생성하여 실행한다.
+// - DBMS 마다 SQL문을 작성할 필요가 없어 편리하다.
+// - DBMS에 최적화된 SQL을 실행할 수 없다.
+//   즉 DBMS의 특징을 최대로 활용할 수 없다.
+// - 예) Hibernate, TopLink 등
 //
-//Mybatis 도입
+// Mybatis 도입
 //1) Mybatis 라이브러리 파일을 프로젝트에 등록하기
-//- mvnrepository.com 또는 search.maven.org에서 mybatis를 검색하여 라이브러리 정보 알아낸다.
-//- build.gradle 파일에 의존 라이브러리 정보를 추가한다.
-//- 'gradle eclipse' 실행하여 라이브러리를 다운로드 받고, 이클립스 설정 파일에 등록한다.
-//- 이클립스 프로젝트를 리프래시하여 변경된 설정 파일의 정보를 반영한다.
+// - mvnrepository.com 또는 search.maven.org에서 mybatis를 검색하여 라이브러리 정보 알아낸다.
+// - build.gradle 파일에 의존 라이브러리 정보를 추가한다.
+// - 'gradle eclipse' 실행하여 라이브러리를 다운로드 받고, 이클립스 설정 파일에 등록한다.
+// - 이클립스 프로젝트를 리프래시하여 변경된 설정 파일의 정보를 반영한다.
 //2) Mybatis 설정 파일 준비
-//- mybatis.org 사이트에서 문서 페이지를 참조한다.
-//- Mybatis 설정 파일(예: mybatis-config.xml)을 생성한다.
-//- 문서 페이지를 참조하여 설정 파일의 내용을 변경한다.
+// - mybatis.org 사이트에서 문서 페이지를 참조한다.
+// - Mybatis 설정 파일(예: mybatis-config.xml)을 생성한다.
+// - 문서 페이지를 참조하여 설정 파일의 내용을 변경한다.
 
 //
 public class Exam0110 {
@@ -74,6 +73,5 @@ public class Exam0110 {
   }
 
 }
-
 
 

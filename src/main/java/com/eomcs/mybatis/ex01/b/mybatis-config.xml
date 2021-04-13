@@ -4,9 +4,11 @@
   "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 
-<properties resource="com/eomcs/mybatis/ex01/b/jdbc.properties"></properties>
+  <!-- jdbc.properties 파일의 내용을 읽어온다.
+       읽어온 정보는 ${프로퍼티명} 문법을 이용하여 그 값을 사용할 수 있다. -->
+  <properties resource="com/eomcs/mybatis/ex01/b/jdbc.properties"></properties>
 
-<environments default="development">
+  <environments default="development">
     <environment id="development">
       <transactionManager type="JDBC"/>
       <dataSource type="POOLED">

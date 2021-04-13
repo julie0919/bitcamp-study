@@ -5,13 +5,24 @@
 
 <mapper namespace="BoardMapper">
   
+  <!-- select 결과를 Map 객체에 받을 수 있다. 
+       - 각각의 레코드 값은 각각의 Map 객체에 보관된다.
+       - 그리고 List에 Map 객체 목록이 보관된다.
+  -->
   <select id="selectBoard" resultType="map">
     select 
       board_id,
-      title,
+      title,    
       contents,
-      created_date,
-      view_count
+      created_date, 
+      view_count  
     from x_board
   </select>
 </mapper>
+
+
+
+
+
+
+

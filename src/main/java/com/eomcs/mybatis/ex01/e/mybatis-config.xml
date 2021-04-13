@@ -5,11 +5,13 @@
 <configuration>
 
   <properties resource="com/eomcs/mybatis/ex01/e/jdbc.properties"></properties>
-  
+
   <typeAliases>
-  <package name="com.eomcs.mybatis.ex01.e"/>
+    <!-- 패키지에 소속된 모든 클래스에 대해 별명을 자동으로 부여할 수 있다.
+         클래스 이름이 별명으로 설정된다.-->
+    <package name="com.eomcs.mybatis.ex01.e"/>
   </typeAliases>
-  
+
   <environments default="development">
     <environment id="development">
       <transactionManager type="JDBC"/>

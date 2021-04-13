@@ -5,11 +5,11 @@
 <configuration>
 
   <properties resource="com/eomcs/mybatis/jdbc.properties"></properties>
-  
+
   <typeAliases>
-  <package name="com.eomcs.mybatis.vo"/>
+    <package name="com.eomcs.mybatis.vo"/>
   </typeAliases>
-  
+
   <environments default="development">
     <environment id="development">
       <transactionManager type="JDBC"/>

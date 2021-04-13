@@ -1,4 +1,4 @@
-// Data Persistence Framework 도입 - 좀 더 쉽게 Mybatis 설정 파일의 InputStream 얻는 방법
+// Data Persistence Framework 도입 - 코드 정리!
 package com.eomcs.mybatis.ex01.a;
 
 import org.apache.ibatis.io.Resources;

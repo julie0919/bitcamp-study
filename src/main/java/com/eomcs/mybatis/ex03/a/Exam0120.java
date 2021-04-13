@@ -1,4 +1,4 @@
-// SQL 문에 삽입할 파라미터 전달하기 - 한개의 값(String) 넘기기
+// SQL 문에 삽입할 파라미터 전달하기 - 한 개의 String 값 넘기기
 package com.eomcs.mybatis.ex03.a;
 
 import java.util.List;
@@ -10,11 +10,11 @@ import com.eomcs.mybatis.vo.Board;
 public class Exam0120 {
 
   public static void main(String[] args) throws Exception {
-
     SqlSession sqlSession = new SqlSessionFactoryBuilder().build(Resources.getResourceAsStream(
         "com/eomcs/mybatis/ex03/a/mybatis-config.xml")).openSession();
 
-    List<Board> boards = sqlSession.selectList("BoardMapper.selectBoard2", "aaa");
+    // 예) 특정 제목의 게시글을 가져온다.
+    List<Board> boards = sqlSession.selectList("BoardMapper.select2", "제목2");
 
     for (Board b : boards) {
       System.out.printf("%d,%s,%s,%s,%d\n",
@@ -24,7 +24,6 @@ public class Exam0120 {
           b.getRegisteredDate(),
           b.getViewCount());
     }
-
     sqlSession.close();
     System.out.println("실행 완료!");
   }

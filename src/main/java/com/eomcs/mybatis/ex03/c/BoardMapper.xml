@@ -4,35 +4,46 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="BoardMapper">
-
+  
+  <!-- insert(sqlId, Board) -->
   <insert id="insert1" parameterType="board">
-  insert into x_board(title,contents,created_date)
-  values(#{title}, #{content}, now())
+    insert into x_board(title,contents,created_date)
+    values(#{title}, #{content}, now())
   </insert>
-
+  
+  <!-- insert(sqlId, Map) -->
   <insert id="insert2" parameterType="map">
-  insert into x_board(title,contents,created_date)
-  values(#{title}, #{content}, now())
+    insert into x_board(title,contents,created_date)
+    values(#{title}, #{content}, now())
   </insert>
-    
+  
+  <!-- insert(sqlId, Board) -->
   <insert id="insert3" parameterType="board" 
           useGeneratedKeys="true" keyColumn="board_id" keyProperty="no">
-  insert into x_board(title,contents,created_date)
-  values(#{title}, #{content}, now())
+    insert into x_board(title,contents,created_date)
+    values(#{title}, #{content}, now())
   </insert>
-    
-   <update id="update" parameterType="board">
-   update x_board set
-   title=#{title},
-   contents=#{content}
-   where 
-   board_id=#{no}
-   </update>
-   
-   <delete id="delete" parameterType="int">
-   delete from x_board 
-   where 
-     board_id=#{no}
-  </delete>
   
+  <!-- update(sqlId, Board) -->
+  <update id="update" parameterType="board">
+    update x_board set
+      title=#{title},
+      contents=#{content}
+    where
+      board_id=#{no}
+  </update>
+  
+  <!-- delete(sqlId, no) -->
+  <delete id="delete" parameterType="int">
+    delete from x_board 
+    where 
+      board_id=#{no}
+  </delete>
 </mapper>
+
+
+
+
+
+
+
