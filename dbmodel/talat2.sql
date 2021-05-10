@@ -13,6 +13,9 @@ DROP TABLE IF EXISTS talat_memb RESTRICT;
 -- 카풀여정
 DROP TABLE IF EXISTS talat_journey RESTRICT;
 
+-- 리뷰메시지
+DROP TABLE IF EXISTS talat_review RESTRICT;
+
 -- 회원가입 기본정보
 DROP TABLE IF EXISTS talat_join RESTRICT;
 
@@ -28,15 +31,6 @@ DROP TABLE IF EXISTS talat_qna RESTRICT;
 -- 라이더문의
 DROP TABLE IF EXISTS talat_qna_rider RESTRICT;
 
--- 리뷰메세지
-DROP TABLE IF EXISTS talat_review RESTRICT;
-
--- 드라이버평가
-DROP TABLE IF EXISTS talat_review_driver RESTRICT;
-
--- 라이더평가
-DROP TABLE IF EXISTS talat_review_rider RESTRICT;
-
 -- 라이더
 CREATE TABLE talat_rider (
   mno INTEGER NOT NULL COMMENT '라이더번호' -- 라이더번호
@@ -49,6 +43,11 @@ ALTER TABLE talat_rider
     PRIMARY KEY (
       mno -- 라이더번호
     );
+
+-- 라이더
+ALTER TABLE talat_rider
+  ADD CONSTRAINT CK_talat_rider -- 라이더 체크 제약
+    CHECK (pymt_type = 1 or pymt_type = 2 or pymt_type = 3);
 
 -- 드라이버
 CREATE TABLE talat_driver (
@@ -68,7 +67,9 @@ CREATE TABLE talat_driver (
   corp_photo VARCHAR(255) NOT NULL COMMENT '회사 인증 사진', -- 회사 인증 사진
   apvl       INTEGER      NOT NULL COMMENT '승인여부', -- 승인여부
   drdt       DATE         NOT NULL DEFAULT curdate() COMMENT '승인날짜', -- 승인날짜
-  apvl_cont  LONGTEXT     NULL     COMMENT '비고' -- 비고
+  apvl_cont  LONGTEXT     NULL     COMMENT '비고', -- 비고
+  star_avg   FLOAT        NOT NULL COMMENT '별점통계', -- 별점통계
+  rev_no     INTEGER      NOT NULL COMMENT '리뷰메시지통계' -- 리뷰메시지통계
 )
 COMMENT '드라이버';
 
@@ -87,7 +88,7 @@ ALTER TABLE talat_driver
 -- 드라이버
 ALTER TABLE talat_driver
   ADD CONSTRAINT CK_talat_driver2 -- 드라이버 체크 제약2
-    CHECK (apvl = 1 or apvl = 0);
+    CHECK (inc_type = 1 or inc_type = 2 or inc_type =3);
 
 -- 드라이버 유니크 인덱스
 CREATE UNIQUE INDEX UIX_talat_driver
@@ -126,7 +127,12 @@ ALTER TABLE talat_qna_driver
 -- 드라이버문의
 ALTER TABLE talat_qna_driver
   ADD CONSTRAINT CK_talat_qna_driver -- 드라이버문의 체크 제약
-    CHECK (answ_stat_d = 1 or answ_stat_d = 0);
+    CHECK (resp_stat = 1 or resp_stat = 0);
+
+-- 드라이버문의
+ALTER TABLE talat_qna_driver
+  ADD CONSTRAINT CK_talat_qna_driver2 -- 드라이버문의 체크 제약2
+    CHECK (qtype = 1 or qtype = 2 or qtype = 3 or qtype = 4 );
 
 ALTER TABLE talat_qna_driver
   MODIFY COLUMN dqno INTEGER NOT NULL AUTO_INCREMENT COMMENT '드라이버문의번호';
@@ -198,8 +204,27 @@ ALTER TABLE talat_journey
   ADD CONSTRAINT CK_talat_journey -- 카풀여정 체크 제약
     CHECK (pet = 1 or pet = 0);
 
+-- 카풀여정
+ALTER TABLE talat_journey
+  ADD CONSTRAINT CK_talat_journey2 -- 카풀여정 체크 제약2
+    CHECK (jstat = 1 or jstat = 0);
+
 ALTER TABLE talat_journey
   MODIFY COLUMN jno INTEGER NOT NULL AUTO_INCREMENT COMMENT '여정번호';
+
+-- 리뷰메시지
+CREATE TABLE talat_review (
+  rev_no INTEGER NOT NULL COMMENT '리뷰메시지번호', -- 리뷰메시지번호
+  rev    INTEGER NOT NULL COMMENT '리뷰내용' -- 리뷰내용
+)
+COMMENT '리뷰메시지';
+
+-- 리뷰메시지
+ALTER TABLE talat_review
+  ADD CONSTRAINT PK_talat_review -- 리뷰메시지 기본키
+    PRIMARY KEY (
+      rev_no -- 리뷰메시지번호
+    );
 
 -- 회원가입 기본정보
 CREATE TABLE talat_join (
@@ -211,8 +236,7 @@ CREATE TABLE talat_join (
   det_addr    VARCHAR(255) NOT NULL COMMENT '상세주소', -- 상세주소
   prof        VARCHAR(255) NOT NULL COMMENT '프로필사진', -- 프로필사진
   pref_gender INTEGER      NOT NULL COMMENT '선호성별', -- 선호성별
-  mrdt        DATE         NOT NULL DEFAULT curdate() COMMENT '등록날짜', -- 등록날짜
-  star_avg    FLOAT        NOT NULL COMMENT '별점통계' -- 별점통계
+  mrdt        DATE         NOT NULL DEFAULT curdate() COMMENT '등록날짜' -- 등록날짜
 )
 COMMENT '회원가입 기본정보';
 
@@ -235,13 +259,15 @@ ALTER TABLE talat_join
 
 -- 라이더 여정 신청
 CREATE TABLE talat_journey_rider (
-  rjno  INTEGER  NOT NULL COMMENT '라이더여정신청번호', -- 라이더여정신청번호
-  mno   INTEGER  NOT NULL COMMENT '라이더번호', -- 라이더번호
-  jno   INTEGER  NOT NULL COMMENT '여정번호', -- 여정번호
-  mstat INTEGER  NOT NULL COMMENT '매칭상태', -- 매칭상태
-  mcont LONGTEXT NULL     COMMENT '비고', -- 비고
-  dstar FLOAT    NULL     COMMENT '드라이버별점', -- 드라이버별점
-  rstar FLOAT    NULL     COMMENT '라이더별점' -- 라이더별점
+  rjno     INTEGER  NOT NULL COMMENT '라이더여정신청번호', -- 라이더여정신청번호
+  mno      INTEGER  NOT NULL COMMENT '라이더번호', -- 라이더번호
+  jno      INTEGER  NOT NULL COMMENT '여정번호', -- 여정번호
+  mstat    INTEGER  NOT NULL COMMENT '매칭상태', -- 매칭상태
+  mcont    LONGTEXT NULL     COMMENT '비고', -- 비고
+  dstar    FLOAT    NULL     COMMENT '드라이버별점', -- 드라이버별점
+  rev_no_d INTEGER  NULL     COMMENT '드라이버리뷰유형번호', -- 드라이버리뷰유형번호
+  rstar    FLOAT    NULL     COMMENT '라이더별점', -- 라이더별점
+  rev_no_r INTEGER  NULL     COMMENT '라이더리뷰유형번호' -- 라이더리뷰유형번호
 )
 COMMENT '라이더 여정 신청';
 
@@ -251,11 +277,6 @@ ALTER TABLE talat_journey_rider
     PRIMARY KEY (
       rjno -- 라이더여정신청번호
     );
-
--- 라이더 여정 신청
-ALTER TABLE talat_journey_rider
-  ADD CONSTRAINT CK_talat_journey_rider -- 라이더 여정 신청 체크 제약
-    CHECK (mstat = 1 or mstat = 0);
 
 -- 라이더 여정 신청 유니크 인덱스
 CREATE UNIQUE INDEX UIX_talat_journey_rider
@@ -297,11 +318,6 @@ ALTER TABLE talat_qna
       qno -- 문의유형번호
     );
 
--- 문의유형
-ALTER TABLE talat_qna
-  ADD CONSTRAINT CK_talat_qna -- 문의유형 체크 제약
-    CHECK (qtitle = 1 or qtitle = 2 or qtitle = 3 or qtitle = 4);
-
 -- 라이더문의
 CREATE TABLE talat_qna_rider (
   rqno        INTEGER      NOT NULL COMMENT '라이더문의번호', -- 라이더문의번호
@@ -327,56 +343,12 @@ ALTER TABLE talat_qna_rider
 -- 라이더문의
 ALTER TABLE talat_qna_rider
   ADD CONSTRAINT CK_talat_qna_rider -- 라이더문의 체크 제약
-    CHECK (answ_stat_r = 1 or answ_stat_r = 0);
+    CHECK (resp_stat = 1 or resp_stat = 0);
 
--- 리뷰메세지
-CREATE TABLE talat_review (
-  rev_no INTEGER      NOT NULL COMMENT '리뷰메세지 번호', -- 리뷰메세지 번호
-  rev    VARCHAR(100) NOT NULL COMMENT '내용' -- 내용
-)
-COMMENT '리뷰메세지';
-
--- 리뷰메세지
-ALTER TABLE talat_review
-  ADD CONSTRAINT PK_talat_review -- 리뷰메세지 기본키
-    PRIMARY KEY (
-      rev_no -- 리뷰메세지 번호
-    );
-
--- 리뷰메세지
-ALTER TABLE talat_review
-  ADD CONSTRAINT CK_talat_review -- 리뷰메세지 체크 제약
-    CHECK (rev_no = 1 or rev_no = 2 or rev_no = 3 or rev_no = 4 or rev_no = 5 or rev_no = 6);
-
--- 드라이버평가
-CREATE TABLE talat_review_driver (
-  rev_no INTEGER NOT NULL COMMENT '리뷰메세지 번호', -- 리뷰메세지 번호
-  rjno   INTEGER NOT NULL COMMENT '라이더여정신청번호' -- 라이더여정신청번호
-)
-COMMENT '드라이버평가';
-
--- 드라이버평가
-ALTER TABLE talat_review_driver
-  ADD CONSTRAINT PK_talat_review_driver -- 드라이버평가 기본키
-    PRIMARY KEY (
-      rev_no, -- 리뷰메세지 번호
-      rjno    -- 라이더여정신청번호
-    );
-
--- 라이더평가
-CREATE TABLE talat_review_rider (
-  rev_no INTEGER NOT NULL COMMENT '리뷰메세지 번호', -- 리뷰메세지 번호
-  rjno   INTEGER NOT NULL COMMENT '라이더여정신청번호' -- 라이더여정신청번호
-)
-COMMENT '라이더평가';
-
--- 라이더평가
-ALTER TABLE talat_review_rider
-  ADD CONSTRAINT PK_talat_review_rider -- 라이더평가 기본키
-    PRIMARY KEY (
-      rev_no, -- 리뷰메세지 번호
-      rjno    -- 라이더여정신청번호
-    );
+-- 라이더문의
+ALTER TABLE talat_qna_rider
+  ADD CONSTRAINT CK_talat_qna_rider2 -- 라이더문의 체크 제약2
+    CHECK (qtype = 1 or qtype = 2 or qtype = 3 or qtype = 4 );
 
 -- 라이더
 ALTER TABLE talat_rider
@@ -396,6 +368,16 @@ ALTER TABLE talat_driver
     )
     REFERENCES talat_join ( -- 회원가입 기본정보
       mno -- 회원번호
+    );
+
+-- 드라이버
+ALTER TABLE talat_driver
+  ADD CONSTRAINT FK_talat_review_TO_talat_driver -- 리뷰메시지 -> 드라이버
+    FOREIGN KEY (
+      rev_no -- 리뷰메시지통계
+    )
+    REFERENCES talat_review ( -- 리뷰메시지
+      rev_no -- 리뷰메시지번호
     );
 
 -- 드라이버문의
@@ -458,6 +440,26 @@ ALTER TABLE talat_journey_rider
       jno -- 여정번호
     );
 
+-- 라이더 여정 신청
+ALTER TABLE talat_journey_rider
+  ADD CONSTRAINT FK_talat_review_TO_talat_journey_rider -- 리뷰메시지 -> 라이더 여정 신청2
+    FOREIGN KEY (
+      rev_no_d -- 드라이버리뷰유형번호
+    )
+    REFERENCES talat_review ( -- 리뷰메시지
+      rev_no -- 리뷰메시지번호
+    );
+
+-- 라이더 여정 신청
+ALTER TABLE talat_journey_rider
+  ADD CONSTRAINT FK_talat_review_TO_talat_journey_rider2 -- 리뷰메시지 -> 라이더 여정 신청
+    FOREIGN KEY (
+      rev_no_r -- 라이더리뷰유형번호
+    )
+    REFERENCES talat_review ( -- 리뷰메시지
+      rev_no -- 리뷰메시지번호
+    );
+
 -- 카풀경로
 ALTER TABLE talat_journey_route
   ADD CONSTRAINT FK_talat_journey_TO_talat_journey_route -- 카풀여정 -> 카풀경로
@@ -486,44 +488,4 @@ ALTER TABLE talat_qna_rider
     )
     REFERENCES talat_qna ( -- 문의유형
       qno -- 문의유형번호
-    );
-
--- 드라이버평가
-ALTER TABLE talat_review_driver
-  ADD CONSTRAINT FK_talat_review_TO_talat_review_driver -- 리뷰메세지 -> 드라이버평가
-    FOREIGN KEY (
-      rev_no -- 리뷰메세지 번호
-    )
-    REFERENCES talat_review ( -- 리뷰메세지
-      rev_no -- 리뷰메세지 번호
-    );
-
--- 드라이버평가
-ALTER TABLE talat_review_driver
-  ADD CONSTRAINT FK_talat_journey_rider_TO_talat_review_driver -- 라이더 여정 신청 -> 드라이버평가
-    FOREIGN KEY (
-      rjno -- 라이더여정신청번호
-    )
-    REFERENCES talat_journey_rider ( -- 라이더 여정 신청
-      rjno -- 라이더여정신청번호
-    );
-
--- 라이더평가
-ALTER TABLE talat_review_rider
-  ADD CONSTRAINT FK_talat_review_TO_talat_review_rider -- 리뷰메세지 -> 라이더평가
-    FOREIGN KEY (
-      rev_no -- 리뷰메세지 번호
-    )
-    REFERENCES talat_review ( -- 리뷰메세지
-      rev_no -- 리뷰메세지 번호
-    );
-
--- 라이더평가
-ALTER TABLE talat_review_rider
-  ADD CONSTRAINT FK_talat_journey_rider_TO_talat_review_rider -- 라이더 여정 신청 -> 라이더평가
-    FOREIGN KEY (
-      rjno -- 라이더여정신청번호
-    )
-    REFERENCES talat_journey_rider ( -- 라이더 여정 신청
-      rjno -- 라이더여정신청번호
     );
